@@ -1,0 +1,977 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>集体研学活动</title>
+  <style>
+    * { box-sizing: border-box; }
+    :root { --page-scale: 1; }
+    html, body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
+      color: #1f2329;
+      background: #eef3fb;
+      font-size: 14px;
+      letter-spacing: 0;
+    }
+
+    .page {
+      position: relative;
+      width: 1920px;
+      height: 1080px;
+      background: #f3f6fb;
+      overflow: hidden;
+      transform-origin: top left;
+      transform: scale(var(--page-scale));
+    }
+
+    .topbar {
+      position: absolute;
+      inset: 0 0 auto 0;
+      height: 60px;
+      background: linear-gradient(100deg, #2860f1 0%, #2765ef 33%, #1aa8e9 100%);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      z-index: 10;
+    }
+
+    .brand {
+      width: 236px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      padding-left: 16px;
+      gap: 12px;
+      font-weight: 700;
+      font-size: 16px;
+      white-space: nowrap;
+    }
+
+    .brand-logo {
+      width: 31px;
+      height: 32px;
+      background-image: url("./assets/reference.png");
+      background-size: 1861px 967px;
+      background-position: -16px -13px;
+      background-repeat: no-repeat;
+    }
+
+    .brand-divider {
+      width: 1px;
+      height: 17px;
+      background: rgba(255,255,255,.45);
+      margin-left: 4px;
+    }
+
+    .org {
+      font-weight: 600;
+      font-size: 15px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .caret {
+      width: 0;
+      height: 0;
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      border-top: 6px solid rgba(255,255,255,.85);
+    }
+
+    .top-tabs {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 42px;
+      font-weight: 700;
+    }
+
+    .top-tab {
+      position: relative;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      padding-top: 1px;
+    }
+
+    .top-tab.active::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      bottom: 4px;
+      width: 42px;
+      height: 3px;
+      border-radius: 2px;
+      background: #fff;
+      transform: translateX(-50%);
+    }
+
+    .top-actions {
+      margin-left: auto;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      padding-right: 17px;
+    }
+
+    .bell, .fullscreen {
+      position: relative;
+      width: 16px;
+      height: 16px;
+    }
+
+    .bell::before {
+      content: "";
+      position: absolute;
+      left: 4px;
+      top: 2px;
+      width: 8px;
+      height: 10px;
+      border: 1.8px solid #fff;
+      border-radius: 8px 8px 4px 4px;
+      border-bottom: none;
+    }
+    .bell::after {
+      content: "";
+      position: absolute;
+      left: 6px;
+      bottom: 1px;
+      width: 5px;
+      height: 2px;
+      border-radius: 4px;
+      background: #fff;
+    }
+    .badge {
+      position: absolute;
+      top: 4px;
+      right: 95px;
+      min-width: 17px;
+      height: 17px;
+      padding: 0 4px;
+      border-radius: 10px;
+      border: 1px solid #fff;
+      background: #ff4d4f;
+      color: #fff;
+      font-size: 11px;
+      line-height: 16px;
+      text-align: center;
+    }
+    .fullscreen::before, .fullscreen::after {
+      content: "";
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      border-color: #fff;
+      border-style: solid;
+    }
+    .fullscreen::before {
+      left: 1px;
+      top: 2px;
+      border-width: 2px 0 0 2px;
+      box-shadow: 10px 0 0 -1px #fff;
+    }
+    .fullscreen::after {
+      right: 1px;
+      bottom: 2px;
+      border-width: 0 2px 2px 0;
+      box-shadow: -10px 0 0 -1px #fff;
+    }
+
+    .avatar {
+      width: 31px;
+      height: 31px;
+      border-radius: 50%;
+      background: #155cf0;
+      display: grid;
+      place-items: center;
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .sidebar {
+      position: absolute;
+      left: 0;
+      top: 60px;
+      bottom: 0;
+      width: 205px;
+      background: #fff;
+      box-shadow: 1px 0 0 rgba(31,35,41,.03);
+      padding-top: 12px;
+      z-index: 4;
+    }
+
+    .menu-item {
+      height: 51px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 0 18px;
+      color: #202124;
+      white-space: nowrap;
+    }
+    .menu-item.active {
+      margin-left: 3px;
+      margin-right: 4px;
+      background: #eef0f3;
+      color: #1265ff;
+    }
+    .menu-icon {
+      position: relative;
+      width: 16px;
+      height: 16px;
+      flex: 0 0 16px;
+      color: currentColor;
+    }
+    .menu-icon.box { border: 1.7px solid currentColor; }
+    .menu-icon.home::before {
+      content: "";
+      position: absolute;
+      left: 1px;
+      top: 6px;
+      width: 13px;
+      height: 9px;
+      border: 1.5px solid currentColor;
+      border-top: none;
+    }
+    .menu-icon.home::after {
+      content: "";
+      position: absolute;
+      left: 2px;
+      top: 1px;
+      width: 11px;
+      height: 11px;
+      border-left: 1.5px solid currentColor;
+      border-top: 1.5px solid currentColor;
+      transform: rotate(45deg);
+    }
+    .menu-icon.diamond {
+      border: 1.7px solid currentColor;
+      transform: rotate(45deg) scale(.82);
+    }
+    .menu-icon.pin {
+      border-radius: 50% 50% 50% 0;
+      border: 2px solid currentColor;
+      transform: rotate(-45deg) scale(.82);
+    }
+    .menu-icon.pin::after {
+      content: "";
+      position: absolute;
+      left: 4px;
+      top: 4px;
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+    .menu-icon.circle {
+      border: 1.7px solid currentColor;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .menu-icon.flag::before {
+      content: "";
+      position: absolute;
+      left: 1px;
+      top: 2px;
+      width: 11px;
+      height: 8px;
+      border: 1.7px solid currentColor;
+      border-left: none;
+    }
+    .menu-icon.flag::after {
+      content: "";
+      position: absolute;
+      left: 1px;
+      top: 1px;
+      width: 1.7px;
+      height: 15px;
+      background: currentColor;
+    }
+    .menu-arrow {
+      margin-left: auto;
+      font-size: 18px;
+      color: inherit;
+      transform: translateY(-1px);
+    }
+    .collapse {
+      position: absolute;
+      left: 93px;
+      bottom: 17px;
+      color: #222;
+      font-size: 21px;
+      transform: scaleX(.72);
+    }
+
+    .main {
+      position: absolute;
+      left: 205px;
+      top: 60px;
+      right: 0;
+      bottom: 0;
+      background: #f3f6fb;
+      padding: 0 18px;
+    }
+
+    .breadcrumb {
+      height: 44px;
+      display: flex;
+      align-items: center;
+      color: #2f3542;
+      gap: 8px;
+    }
+    .crumb-home {
+      width: 13px;
+      height: 13px;
+      position: relative;
+      color: #8b9aae;
+      margin-left: 3px;
+    }
+    .crumb-home::before {
+      content: "";
+      position: absolute;
+      left: 1px;
+      top: 5px;
+      width: 10px;
+      height: 7px;
+      border: 1.4px solid currentColor;
+      border-top: none;
+    }
+    .crumb-home::after {
+      content: "";
+      position: absolute;
+      left: 2px;
+      top: 1px;
+      width: 8px;
+      height: 8px;
+      border-left: 1.4px solid currentColor;
+      border-top: 1.4px solid currentColor;
+      transform: rotate(45deg);
+    }
+
+    .filter-card {
+      height: 124px;
+      background: #fff;
+      border-radius: 4px;
+      padding: 20px 20px 18px 25px;
+      display: grid;
+      grid-template-columns: 478px 482px 474px 1px 105px;
+      grid-template-rows: 32px 32px;
+      column-gap: 28px;
+      row-gap: 17px;
+      align-items: center;
+    }
+
+    .field {
+      display: grid;
+      grid-template-columns: 66px 1fr;
+      align-items: center;
+      gap: 0;
+    }
+    .field label {
+      color: #3e4652;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+    .control {
+      height: 32px;
+      border: 1px solid #d3ddea;
+      border-radius: 5px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 11px;
+      color: #8b94a3;
+      background: #fff;
+    }
+    .control .down {
+      width: 8px;
+      height: 8px;
+      border-right: 1px solid #c1c8d3;
+      border-bottom: 1px solid #c1c8d3;
+      transform: rotate(45deg) translateY(-2px);
+    }
+    .date-range {
+      justify-content: flex-start;
+      gap: 47px;
+    }
+    .date-range .arrow {
+      color: #c7cdd8;
+      margin-left: 18px;
+      margin-right: -12px;
+    }
+    .date-range .calendar {
+      margin-left: auto;
+      width: 14px;
+      height: 14px;
+      border: 1.2px solid #bcc4cf;
+      border-radius: 2px;
+      position: relative;
+    }
+    .date-range .calendar::before {
+      content: "";
+      position: absolute;
+      left: 1px;
+      right: 1px;
+      top: 3px;
+      height: 1px;
+      background: #bcc4cf;
+    }
+
+    .filter-divider {
+      grid-column: 4;
+      grid-row: 1 / span 2;
+      width: 1px;
+      height: 73px;
+      background: #e5e9f0;
+    }
+    .search-area {
+      grid-column: 5;
+      grid-row: 1 / span 2;
+      height: 75px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      justify-content: space-between;
+    }
+    .btn {
+      border: 0;
+      border-radius: 4px;
+      background: #1764ff;
+      color: #fff;
+      font-weight: 600;
+      height: 32px;
+      padding: 0 17px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-size: 14px;
+    }
+    .search-icon {
+      width: 14px;
+      height: 14px;
+      border: 1.8px solid #fff;
+      border-radius: 50%;
+      position: relative;
+    }
+    .search-icon::after {
+      content: "";
+      position: absolute;
+      width: 6px;
+      height: 1.8px;
+      background: #fff;
+      right: -5px;
+      bottom: -2px;
+      transform: rotate(45deg);
+      border-radius: 2px;
+    }
+    .expand {
+      color: #1764ff;
+      font-weight: 500;
+      padding-right: 9px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .expand .down {
+      width: 8px;
+      height: 8px;
+      border-right: 1.5px solid #1764ff;
+      border-bottom: 1.5px solid #1764ff;
+      transform: rotate(45deg) translateY(-3px);
+    }
+
+    .list-card {
+      position: absolute;
+      left: 18px;
+      right: 18px;
+      top: 168px;
+      bottom: 16px;
+      background: #fff;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .create-row {
+      height: 65px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding: 0 20px;
+    }
+    .create-row .btn {
+      width: 120px;
+      height: 32px;
+      padding: 0;
+    }
+
+    .table-wrap {
+      position: absolute;
+      left: 20px;
+      right: 22px;
+      top: 65px;
+      bottom: 59px;
+      overflow: hidden;
+      background: #fff;
+    }
+    table {
+      border-collapse: collapse;
+      width: 1700px;
+      table-layout: fixed;
+      font-size: 14px;
+    }
+    thead th {
+      height: 47px;
+      background: #f1f2f4;
+      text-align: left;
+      color: #1f2329;
+      font-weight: 700;
+      padding: 0 10px;
+      white-space: nowrap;
+    }
+    tbody td {
+      height: 84px;
+      border-bottom: 1px solid #edf0f4;
+      padding: 0 10px;
+      vertical-align: middle;
+      color: #151922;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    col.name { width: 260px; }
+    col.qrcol { width: 100px; }
+    col.grade { width: 150px; }
+    col.price { width: 100px; }
+    col.date { width: 150px; }
+    col.type { width: 150px; }
+    col.school { width: 150px; }
+    col.bureau { width: 150px; }
+    col.switch { width: 100px; }
+    col.status { width: 95px; }
+    col.op { width: 260px; }
+
+    .activity {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      min-width: 0;
+    }
+    .cover {
+      width: 60px;
+      height: 60px;
+      border-radius: 4px;
+      flex: 0 0 auto;
+      background-image: url("./assets/reference.png");
+      background-size: 1861px 967px;
+      background-repeat: no-repeat;
+      border: 1px solid rgba(0,0,0,.08);
+    }
+    .cover.c1 { background-position: -247px -347px; }
+    .cover.c2 { background-position: -247px -432px; }
+    .cover.c3 { background-position: -247px -517px; }
+    .cover.c4 { background-position: -247px -602px; }
+    .cover.c5 { background-position: -247px -687px; }
+    .cover.c6 { background-position: -247px -772px; }
+    .cover.c7 { background-position: -247px -857px; }
+    .activity-name {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .qr {
+      width: 31px;
+      height: 31px;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      grid-template-rows: repeat(5, 1fr);
+      gap: 3px;
+      padding: 1px;
+    }
+    .qr i {
+      background: #1f2329;
+      min-width: 4px;
+      min-height: 4px;
+    }
+    .qr i:nth-child(1), .qr i:nth-child(2), .qr i:nth-child(4), .qr i:nth-child(5),
+    .qr i:nth-child(6), .qr i:nth-child(9), .qr i:nth-child(10),
+    .qr i:nth-child(11), .qr i:nth-child(13), .qr i:nth-child(14),
+    .qr i:nth-child(16), .qr i:nth-child(18), .qr i:nth-child(21),
+    .qr i:nth-child(22), .qr i:nth-child(24) { background: #1f2329; }
+    .qr i:not(:nth-child(1)):not(:nth-child(2)):not(:nth-child(4)):not(:nth-child(5)):not(:nth-child(6)):not(:nth-child(9)):not(:nth-child(10)):not(:nth-child(11)):not(:nth-child(13)):not(:nth-child(14)):not(:nth-child(16)):not(:nth-child(18)):not(:nth-child(21)):not(:nth-child(22)):not(:nth-child(24)) {
+      background: transparent;
+    }
+    .info {
+      display: inline-grid;
+      place-items: center;
+      width: 14px;
+      height: 14px;
+      border: 1px solid #8a9099;
+      border-radius: 50%;
+      color: #707782;
+      font-size: 10px;
+      font-weight: 600;
+      margin-left: 4px;
+      transform: translateY(-1px);
+    }
+    .switch-on {
+      width: 45px;
+      height: 22px;
+      border-radius: 12px;
+      background: #1764ff;
+      position: relative;
+      color: #fff;
+      font-size: 13px;
+      line-height: 22px;
+      padding-left: 8px;
+      font-weight: 600;
+    }
+    .switch-on::after {
+      content: "";
+      position: absolute;
+      right: 2px;
+      top: 2px;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #fff;
+    }
+    .muted { color: #c3c8d0; }
+    .blue { color: #0067ff; font-weight: 500; }
+    a.blue { text-decoration: none; }
+    .ops {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+    }
+
+    .fixed-op {
+      position: absolute;
+      top: 65px;
+      right: 22px;
+      bottom: 59px;
+      width: 277px;
+      background: rgba(255,255,255,.96);
+      box-shadow: -5px 0 13px rgba(31,35,41,.10);
+      z-index: 3;
+      overflow: hidden;
+    }
+    .fixed-op .head {
+      height: 47px;
+      background: #f1f2f4;
+      display: flex;
+      align-items: center;
+      padding-left: 18px;
+      font-weight: 700;
+    }
+    .fixed-op .row {
+      height: 84px;
+      border-bottom: 1px solid #edf0f4;
+      display: flex;
+      align-items: center;
+      padding-left: 18px;
+    }
+    .fixed-op .ops { gap: 20px; }
+    .v-scroll {
+      position: absolute;
+      right: 0;
+      top: 47px;
+      bottom: 0;
+      width: 6px;
+      background: #eceff3;
+    }
+    .v-scroll::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 6px;
+      height: 355px;
+      background: #b6b8bb;
+      border-radius: 4px;
+    }
+
+    .h-scroll {
+      position: absolute;
+      left: 20px;
+      right: 22px;
+      bottom: 59px;
+      height: 12px;
+      z-index: 5;
+      background: transparent;
+    }
+    .h-scroll .track {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 8px;
+      background: #eceff2;
+      border-radius: 4px;
+    }
+    .h-scroll .thumb {
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      height: 8px;
+      width: 1375px;
+      background: #bbbfc4;
+      border-radius: 4px;
+    }
+
+    .pagination {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 59px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      color: #2c3038;
+    }
+    .page-btn, .size-select, .jump-input {
+      height: 32px;
+      min-width: 32px;
+      border: 1px solid #d4dbe7;
+      border-radius: 4px;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .page-btn.active {
+      background: #1764ff;
+      color: #fff;
+      border-color: #1764ff;
+    }
+    .next-arrow {
+      width: 9px;
+      height: 9px;
+      border-right: 1.5px solid #222;
+      border-bottom: 1.5px solid #222;
+      transform: rotate(-45deg);
+    }
+    .size-select {
+      width: 98px;
+      gap: 8px;
+      color: #333;
+    }
+    .size-select .down {
+      width: 8px;
+      height: 8px;
+      border-right: 1px solid #aeb6c3;
+      border-bottom: 1px solid #aeb6c3;
+      transform: rotate(45deg) translateY(-2px);
+    }
+    .jump-input { width: 52px; }
+
+    .floating-code {
+      position: absolute;
+      right: 0;
+      top: 500px;
+      width: 30px;
+      height: 162px;
+      border-radius: 5px 0 0 5px;
+      background: #0ac46c;
+      color: #fff;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      line-height: 23px;
+      writing-mode: vertical-rl;
+      letter-spacing: 1px;
+      z-index: 20;
+    }
+
+    .date-cell { line-height: 22px; }
+    .status-text { color: #1f2329; }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-logo"></div>
+        <span>张伟的机构</span>
+        <div class="brand-divider"></div>
+        <div class="org">机构 <span class="caret"></span></div>
+      </div>
+      <nav class="top-tabs">
+        <div class="top-tab active">研学</div>
+        <div class="top-tab">课后服务</div>
+      </nav>
+      <div class="top-actions">
+        <div class="bell"></div>
+        <div class="fullscreen"></div>
+        <div class="avatar">张</div>
+      </div>
+      <div class="badge">1</div>
+    </header>
+
+    <aside class="sidebar">
+      <div class="menu-item"><span class="menu-icon home"></span><span>数据看板</span></div>
+      <div class="menu-item"><span class="menu-icon diamond"></span><span>研学课程</span></div>
+      <div class="menu-item"><span class="menu-icon box"></span><span>托管活动管理</span></div>
+      <div class="menu-item"><span class="menu-icon flag"></span><span>社会实践</span></div>
+      <div class="menu-item"><span class="menu-icon pin"></span><span>场地管理</span></div>
+      <div class="menu-item active"><span class="menu-icon flag"></span><span>集体研学活动</span></div>
+      <div class="menu-item"><span class="menu-icon box"></span><span>任务广场</span></div>
+      <div class="menu-item"><span class="menu-icon box"></span><span>比选中心</span></div>
+      <div class="menu-item"><span class="menu-icon box"></span><span>出行管理</span></div>
+      <div class="menu-item"><span class="menu-icon box"></span><span>报表管理(研学)</span><span class="menu-arrow">⌄</span></div>
+      <div class="menu-item"><span class="menu-icon circle"></span><span>订单管理（研学）</span><span class="menu-arrow">⌄</span></div>
+      <div class="menu-item"><span class="menu-icon circle">R</span><span>财务管理（研学）</span></div>
+      <div class="menu-item"><span class="menu-icon box"></span><span>托管活动结算</span></div>
+      <div class="menu-item"><span class="menu-icon circle">S</span><span>集体研学活动结算</span></div>
+      <div class="menu-item"><span class="menu-icon box"></span><span>系统设置</span><span class="menu-arrow">⌄</span></div>
+      <div class="menu-item"><span class="menu-icon box"></span><span>意见反馈</span></div>
+      <div class="collapse">≪</div>
+    </aside>
+
+    <main class="main">
+      <div class="breadcrumb"><span class="crumb-home"></span><span>/</span><span>集体研学活动</span></div>
+
+      <section class="filter-card">
+        <div class="field"><label>适用年级</label><div class="control"><span>请选择</span><span class="down"></span></div></div>
+        <div class="field"><label>活动出行日期</label><div class="control date-range"><span>开始日期</span><span class="arrow">→</span><span>结束日期</span><span class="calendar"></span></div></div>
+        <div class="field"><label>所属教育局</label><div class="control"><span>请选择</span><span class="down"></span></div></div>
+        <div class="field"><label>学校名称</label><div class="control"><span>请选择</span><span class="down"></span></div></div>
+        <div class="field"><label>报名类型</label><div class="control"><span>请选择</span><span class="down"></span></div></div>
+        <div class="field"><label>状态</label><div class="control"><span>请选择</span><span class="down"></span></div></div>
+        <div class="filter-divider"></div>
+        <div class="search-area">
+          <button class="btn"><span class="search-icon"></span><span>查询</span></button>
+          <div class="expand">展开 <span class="down"></span></div>
+        </div>
+      </section>
+
+      <section class="list-card">
+        <div class="create-row"><button class="btn">创建申报活动</button></div>
+
+        <div class="table-wrap">
+          <table>
+            <colgroup>
+              <col class="name"><col class="qrcol"><col class="grade"><col class="price"><col class="date">
+              <col class="type"><col class="school"><col class="bureau"><col class="switch"><col class="status"><col class="op">
+            </colgroup>
+            <thead>
+              <tr>
+                <th>活动名称</th>
+                <th>海报二维码</th>
+                <th>适用年级</th>
+                <th>价格(元)</th>
+                <th>活动出行日期</th>
+                <th>报名类型 <span class="info">i</span></th>
+                <th>申报学校</th>
+                <th>所属教育局</th>
+                <th>上/下架</th>
+                <th>状态</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><div class="activity"><span class="cover c1"></span><span class="activity-name">上海科技馆AI探索研学</span></div></td>
+                <td><div class="qr"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></td>
+                <td>一年级,二年级,三年...</td><td>50</td><td class="date-cell">2026-08-27 至<br>2026-08-27</td><td>需要报名</td><td>张伟的学校</td><td>张伟的教育局</td><td><div class="switch-on">开</div></td><td class="status-text">已...</td><td></td>
+              </tr>
+              <tr>
+                <td><div class="activity"><span class="cover c2"></span><span class="activity-name">自然博物馆生命科学研学</span></div></td>
+                <td><div class="qr"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></td>
+                <td>一年级,二年级,三年...</td><td>0.01</td><td class="date-cell">2026-08-28 至<br>2026-08-29</td><td>需要报名</td><td>张伟的学校</td><td>张伟的教育局</td><td><div class="switch-on">开</div></td><td class="status-text">已...</td><td></td>
+              </tr>
+              <tr>
+                <td><div class="activity"><span class="cover c3"></span><span class="activity-name">非遗文化体验研学</span></div></td>
+                <td><div class="qr"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></td>
+                <td>一年级,二年级,三年...</td><td>0.01</td><td class="date-cell">2026-08-29 至<br>2026-08-30</td><td>需要报名</td><td>张伟的学校</td><td>张伟的教育局</td><td><div class="switch-on">开</div></td><td class="status-text">已...</td><td></td>
+              </tr>
+              <tr>
+                <td><div class="activity"><span class="cover c4"></span><span class="activity-name">城市安全教育研学</span></div></td>
+                <td><div class="qr"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></td>
+                <td>一年级,二年级,三年...</td><td>0.01</td><td class="date-cell">2026-08-30 至<br>2026-09-02</td><td>需要报名</td><td>张伟的学校</td><td>张伟的教育局</td><td><div class="switch-on">开</div></td><td class="status-text">已...</td><td></td>
+              </tr>
+              <tr>
+                <td><div class="activity"><span class="cover c5"></span><span class="activity-name">生态农场劳动研学</span></div></td>
+                <td><div class="qr"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></td>
+                <td>一年级,二年级,三年...</td><td>0.01</td><td class="date-cell">2026-08-13 至<br>2026-08-14</td><td>需要报名</td><td>张伟的学校</td><td>张伟的教育局</td><td><div class="switch-on">开</div></td><td class="status-text">已...</td><td></td>
+              </tr>
+              <tr>
+                <td><div class="activity"><span class="cover c6"></span><span class="activity-name">航空航天主题研学</span></div></td>
+                <td><div class="qr"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></td>
+                <td>一年级,二年级,二年...</td><td>0.01</td><td class="date-cell">2026-08-10 至<br>2026-08-13</td><td>需要报名</td><td>张伟的学校</td><td>张伟的教育局</td><td><div class="switch-on">开</div></td><td class="status-text">已...</td><td></td>
+              </tr>
+              <tr>
+                <td><div class="activity"><span class="cover c7"></span><span class="activity-name">古建筑文化研学</span></div></td>
+                <td><div class="qr"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></td>
+                <td>一年级,二年级,三年...</td><td>0.01</td><td class="date-cell">2026-07-24 至<br>2026-07-26</td><td>需要报名</td><td>张伟的学校</td><td>张伟的教育局</td><td><div class="switch-on">开</div></td><td class="status-text">已...</td><td></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="fixed-op">
+          <div class="head">操作</div>
+          <div class="row"><div class="ops"><span class="blue">查看</span><span class="muted">编辑</span><a class="blue material-link" href="./report-material.html" data-title="上海科技馆AI探索研学" data-travel-start="2026-08-27" data-travel-end="2026-08-27" data-signup-start="2026-08-26 09:00" data-signup-end="2026-08-26 18:00">报备材料上传</a></div></div>
+          <div class="row"><div class="ops"><span class="blue">查看</span><span class="muted">编辑</span><a class="blue material-link" href="./report-material.html" data-title="自然博物馆生命科学研学" data-travel-start="2026-08-28" data-travel-end="2026-08-29" data-signup-start="2026-08-26 09:47" data-signup-end="2026-08-27 18:00">报备材料上传</a></div></div>
+          <div class="row"><div class="ops"><span class="blue">查看</span><span class="muted">编辑</span><a class="blue material-link" href="./report-material.html" data-title="非遗文化体验研学" data-travel-start="2026-08-29" data-travel-end="2026-08-30" data-signup-start="2026-08-26 09:47" data-signup-end="2026-08-28 18:00">报备材料上传</a></div></div>
+          <div class="row"><div class="ops"><span class="blue">查看</span><span class="muted">编辑</span><a class="blue material-link" href="./report-material.html" data-title="城市安全教育研学" data-travel-start="2026-08-30" data-travel-end="2026-09-02" data-signup-start="2026-08-26 09:47" data-signup-end="2026-08-29 09:47">报备材料上传</a></div></div>
+          <div class="row"><div class="ops"><span class="blue">查看</span><span class="muted">编辑</span><a class="blue material-link" href="./report-material.html" data-title="生态农场劳动研学" data-travel-start="2026-08-13" data-travel-end="2026-08-14" data-signup-start="2026-08-12 09:47" data-signup-end="2026-08-12 18:00">报备材料上传</a></div></div>
+          <div class="row"><div class="ops"><span class="blue">查看</span><span class="muted">编辑</span><a class="blue material-link" href="./report-material.html" data-title="航空航天主题研学" data-travel-start="2026-08-10" data-travel-end="2026-08-13" data-signup-start="2026-08-09 09:47" data-signup-end="2026-08-09 18:00">报备材料上传</a></div></div>
+          <div class="row"><div class="ops"><span class="blue">查看</span><span class="muted">编辑</span><a class="blue material-link" href="./report-material.html" data-title="古建筑文化研学" data-travel-start="2026-07-24" data-travel-end="2026-07-26" data-signup-start="2026-07-23 09:47" data-signup-end="2026-07-23 18:00">报备材料上传</a></div></div>
+          <div class="v-scroll"></div>
+        </div>
+
+        <div class="h-scroll"><div class="track"></div><div class="thumb"></div></div>
+
+        <div class="pagination">
+          <span>共 13 条数据</span>
+          <span class="page-btn active">1</span>
+          <span class="page-btn">2</span>
+          <span class="page-btn"><span class="next-arrow"></span></span>
+          <span class="size-select">10 条/页 <span class="down"></span></span>
+          <span>跳至</span>
+          <span class="jump-input"></span>
+          <span>页</span>
+        </div>
+      </section>
+    </main>
+
+    <div class="floating-code">机构小程序码《</div>
+  </div>
+  <script>
+    (() => {
+      const setPageScale = () => {
+        const scale = Math.min(window.innerWidth / 1920, window.innerHeight / 1080, 1);
+        document.documentElement.style.setProperty("--page-scale", scale.toString());
+      };
+      setPageScale();
+      window.addEventListener("resize", setPageScale);
+    })();
+
+    document.querySelectorAll(".material-link").forEach((link) => {
+      link.addEventListener("click", () => {
+        sessionStorage.setItem("selectedActivity", JSON.stringify(link.dataset));
+      });
+    });
+  </script>
+</body>
+</html>

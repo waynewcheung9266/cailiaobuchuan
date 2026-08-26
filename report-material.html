@@ -1,0 +1,1106 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>活动材料</title>
+  <style>
+    * { box-sizing: border-box; }
+    :root { --page-scale: 1; }
+    html, body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
+      color: #1f2329;
+      background: #f3f6fb;
+      font-size: 14px;
+      letter-spacing: 0;
+    }
+    .page {
+      position: relative;
+      width: 1920px;
+      height: 1080px;
+      background: #f3f6fb;
+      overflow: hidden;
+      transform-origin: top left;
+      transform: scale(var(--page-scale));
+    }
+    .topbar {
+      position: absolute;
+      inset: 0 0 auto 0;
+      height: 60px;
+      background: linear-gradient(100deg, #2860f1 0%, #2765ef 33%, #1aa8e9 100%);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      z-index: 10;
+    }
+    .brand {
+      width: 236px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      padding-left: 16px;
+      gap: 12px;
+      font-weight: 700;
+      font-size: 16px;
+      white-space: nowrap;
+    }
+    .brand-logo {
+      width: 31px;
+      height: 32px;
+      background-image: url("./assets/reference.png");
+      background-size: 1861px 967px;
+      background-position: -16px -13px;
+      background-repeat: no-repeat;
+    }
+    .brand-divider {
+      width: 1px;
+      height: 17px;
+      background: rgba(255,255,255,.45);
+      margin-left: 4px;
+    }
+    .org {
+      font-weight: 600;
+      font-size: 15px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .caret {
+      width: 0;
+      height: 0;
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      border-top: 6px solid rgba(255,255,255,.85);
+    }
+    .top-tabs {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 42px;
+      font-weight: 700;
+    }
+    .top-tab {
+      position: relative;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      padding-top: 1px;
+    }
+    .top-tab.active::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      bottom: 4px;
+      width: 42px;
+      height: 3px;
+      border-radius: 2px;
+      background: #fff;
+      transform: translateX(-50%);
+    }
+    .top-actions {
+      margin-left: auto;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      padding-right: 17px;
+    }
+    .bell, .fullscreen { position: relative; width: 16px; height: 16px; }
+    .bell::before {
+      content: "";
+      position: absolute;
+      left: 4px;
+      top: 2px;
+      width: 8px;
+      height: 10px;
+      border: 1.8px solid #fff;
+      border-radius: 8px 8px 4px 4px;
+      border-bottom: none;
+    }
+    .bell::after {
+      content: "";
+      position: absolute;
+      left: 6px;
+      bottom: 1px;
+      width: 5px;
+      height: 2px;
+      border-radius: 4px;
+      background: #fff;
+    }
+    .badge {
+      position: absolute;
+      top: 4px;
+      right: 95px;
+      min-width: 17px;
+      height: 17px;
+      padding: 0 4px;
+      border-radius: 10px;
+      border: 1px solid #fff;
+      background: #ff4d4f;
+      color: #fff;
+      font-size: 11px;
+      line-height: 16px;
+      text-align: center;
+    }
+    .fullscreen::before, .fullscreen::after {
+      content: "";
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      border-color: #fff;
+      border-style: solid;
+    }
+    .fullscreen::before {
+      left: 1px;
+      top: 2px;
+      border-width: 2px 0 0 2px;
+      box-shadow: 10px 0 0 -1px #fff;
+    }
+    .fullscreen::after {
+      right: 1px;
+      bottom: 2px;
+      border-width: 0 2px 2px 0;
+      box-shadow: -10px 0 0 -1px #fff;
+    }
+    .avatar {
+      width: 31px;
+      height: 31px;
+      border-radius: 50%;
+      background: #155cf0;
+      display: grid;
+      place-items: center;
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .sidebar {
+      position: absolute;
+      left: 0;
+      top: 60px;
+      bottom: 0;
+      width: 205px;
+      background: #fff;
+      box-shadow: 1px 0 0 rgba(31,35,41,.03);
+      padding-top: 12px;
+      z-index: 4;
+    }
+    .menu-item {
+      height: 51px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 0 18px;
+      color: #202124;
+      white-space: nowrap;
+    }
+    .menu-item.active {
+      margin-left: 5px;
+      margin-right: 3px;
+      background: #eef0f3;
+      color: #1265ff;
+    }
+    .menu-icon {
+      position: relative;
+      width: 16px;
+      height: 16px;
+      flex: 0 0 16px;
+      color: currentColor;
+    }
+    .menu-icon.box { border: 1.7px solid currentColor; }
+    .menu-icon.home::before {
+      content: "";
+      position: absolute;
+      left: 1px;
+      top: 6px;
+      width: 13px;
+      height: 9px;
+      border: 1.5px solid currentColor;
+      border-top: none;
+    }
+    .menu-icon.home::after {
+      content: "";
+      position: absolute;
+      left: 2px;
+      top: 1px;
+      width: 11px;
+      height: 11px;
+      border-left: 1.5px solid currentColor;
+      border-top: 1.5px solid currentColor;
+      transform: rotate(45deg);
+    }
+    .menu-icon.diamond {
+      border: 1.7px solid currentColor;
+      transform: rotate(45deg) scale(.82);
+    }
+    .menu-icon.pin {
+      border-radius: 50% 50% 50% 0;
+      border: 2px solid currentColor;
+      transform: rotate(-45deg) scale(.82);
+    }
+    .menu-icon.pin::after {
+      content: "";
+      position: absolute;
+      left: 4px;
+      top: 4px;
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+    .menu-icon.circle {
+      border: 1.7px solid currentColor;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .menu-icon.flag::before {
+      content: "";
+      position: absolute;
+      left: 1px;
+      top: 2px;
+      width: 11px;
+      height: 8px;
+      border: 1.7px solid currentColor;
+      border-left: none;
+    }
+    .menu-icon.flag::after {
+      content: "";
+      position: absolute;
+      left: 1px;
+      top: 1px;
+      width: 1.7px;
+      height: 15px;
+      background: currentColor;
+    }
+    .menu-arrow {
+      margin-left: auto;
+      font-size: 18px;
+      color: inherit;
+      transform: translateY(-1px);
+    }
+    .collapse {
+      position: absolute;
+      left: 93px;
+      bottom: 17px;
+      color: #222;
+      font-size: 21px;
+      transform: scaleX(.72);
+    }
+
+    .main {
+      position: absolute;
+      left: 205px;
+      top: 60px;
+      right: 0;
+      bottom: 0;
+      background: #f3f6fb;
+      padding: 0 20px 20px 18px;
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+    .breadcrumb {
+      height: 45px;
+      display: flex;
+      align-items: center;
+      color: #2f3542;
+      gap: 8px;
+    }
+    .crumb-home {
+      width: 13px;
+      height: 13px;
+      position: relative;
+      color: #8b9aae;
+      margin-left: 4px;
+    }
+    .crumb-home::before {
+      content: "";
+      position: absolute;
+      left: 1px;
+      top: 5px;
+      width: 10px;
+      height: 7px;
+      border: 1.4px solid currentColor;
+      border-top: none;
+    }
+    .crumb-home::after {
+      content: "";
+      position: absolute;
+      left: 2px;
+      top: 1px;
+      width: 8px;
+      height: 8px;
+      border-left: 1.4px solid currentColor;
+      border-top: 1.4px solid currentColor;
+      transform: rotate(45deg);
+    }
+
+    .detail-card {
+      position: relative;
+      height: 305px;
+      background: #fff;
+      border-radius: 6px;
+      overflow: hidden;
+      padding: 27px 24px;
+    }
+    .decor {
+      position: absolute;
+      left: 602px;
+      top: -212px;
+      width: 454px;
+      height: 454px;
+      border: 113px solid rgba(228, 247, 245, .75);
+      border-radius: 50%;
+    }
+    .decor::after {
+      content: "";
+      position: absolute;
+      right: -10px;
+      top: -47px;
+      width: 193px;
+      height: 193px;
+      border-radius: 50%;
+      background: rgba(185, 181, 230, .72);
+    }
+    .back {
+      position: absolute;
+      top: 21px;
+      right: 23px;
+      width: 64px;
+      height: 33px;
+      border: 1px solid #1764ff;
+      color: #1764ff;
+      background: #fff;
+      border-radius: 4px;
+      display: grid;
+      place-items: center;
+      font-weight: 500;
+      text-decoration: none;
+    }
+    h1 {
+      position: relative;
+      margin: 0;
+      font-size: 18px;
+      line-height: 24px;
+      font-weight: 700;
+      z-index: 1;
+    }
+    .activity-main {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      margin-top: 45px;
+      gap: 39px;
+      align-items: flex-start;
+    }
+    .poster {
+      width: 291px;
+      height: 165px;
+      border-radius: 4px;
+      overflow: hidden;
+      background-image: url("./assets/detail-reference.png");
+      background-repeat: no-repeat;
+      background-size: 1863px 966px;
+      background-position: -246px -196px;
+    }
+    .facts {
+      display: grid;
+      gap: 13px;
+      padding-top: 0;
+      color: #3d4a5d;
+      min-width: 620px;
+    }
+    .fact {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      height: 17px;
+      white-space: nowrap;
+    }
+    .fact-icon {
+      position: relative;
+      width: 15px;
+      height: 15px;
+      flex: 0 0 15px;
+    }
+    .fact-icon.doc {
+      border: 1.5px solid #16b7b3;
+      border-radius: 2px;
+    }
+    .fact-icon.doc::before,
+    .fact-icon.doc::after {
+      content: "";
+      position: absolute;
+      left: 3px;
+      height: 1.5px;
+      background: #16b7b3;
+    }
+    .fact-icon.doc::before { top: 5px; width: 7px; }
+    .fact-icon.doc::after { top: 9px; width: 9px; }
+    .fact-icon.grade {
+      border: 1.5px solid #ff4d4f;
+      border-radius: 2px;
+    }
+    .fact-icon.grade::before {
+      content: "";
+      position: absolute;
+      left: 3px;
+      top: 6px;
+      width: 9px;
+      height: 1.5px;
+      background: #ff4d4f;
+      box-shadow: 0 4px 0 #ff4d4f;
+    }
+    .fact-icon.money {
+      border: 1.5px solid #ff8a00;
+      color: #ff8a00;
+      border-radius: 2px;
+      display: grid;
+      place-items: center;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .fact-icon.people::before,
+    .fact-icon.people::after {
+      content: "";
+      position: absolute;
+      border: 1.5px solid #2469ff;
+      border-radius: 50%;
+    }
+    .fact-icon.people::before {
+      left: 5px;
+      top: 1px;
+      width: 5px;
+      height: 5px;
+    }
+    .fact-icon.people::after {
+      left: 2px;
+      bottom: 0;
+      width: 11px;
+      height: 7px;
+      border-bottom: none;
+    }
+    .fact-icon.area::before,
+    .fact-icon.area::after {
+      content: "";
+      position: absolute;
+      background: #ff8a00;
+      border-radius: 5px;
+    }
+    .fact-icon.area::before {
+      left: 6px;
+      top: 0;
+      width: 3px;
+      height: 15px;
+    }
+    .fact-icon.area::after {
+      left: 0;
+      top: 6px;
+      width: 15px;
+      height: 3px;
+    }
+
+    .status-card {
+      height: 64px;
+      margin-top: 16px;
+      background: #fff;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      padding-left: 26px;
+      color: #1f2329;
+    }
+
+    .materials-card {
+      min-height: 565px;
+      margin-top: 17px;
+      margin-bottom: 0;
+      background: #fff;
+      border-radius: 6px;
+      padding: 0 25px 30px;
+      overflow: visible;
+    }
+    .tabs {
+      height: 64px;
+      display: flex;
+      align-items: center;
+      gap: 47px;
+      padding-left: 18px;
+      color: #8a94a5;
+      font-weight: 700;
+    }
+    .tab {
+      position: relative;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      white-space: nowrap;
+    }
+    .tab.active {
+      color: #075fff;
+    }
+    .tab.active::after {
+      content: "";
+      position: absolute;
+      left: 13px;
+      right: 13px;
+      bottom: 9px;
+      height: 3px;
+      border-radius: 2px;
+      background: #1764ff;
+    }
+    .section-title {
+      margin: 8px 0 13px;
+      font-size: 20px;
+      line-height: 24px;
+      font-weight: 700;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+      color: #1f2329;
+    }
+    thead th {
+      height: 47px;
+      background: #fafafa;
+      text-align: left;
+      font-weight: 700;
+      padding: 0 11px;
+    }
+    tbody td {
+      height: 50px;
+      border-bottom: 1px solid #edf0f4;
+      padding: 0 11px;
+      white-space: nowrap;
+    }
+    col.material { width: 36%; }
+    col.file { width: 50%; }
+    col.action { width: 14%; }
+    .links {
+      display: flex;
+      gap: 24px;
+      color: #0067ff;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+    .action-link {
+      color: #0067ff;
+      cursor: pointer;
+    }
+    .action-link.disabled {
+      color: #c3c8d0;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+    .upload-tag {
+      display: inline-flex;
+      align-items: center;
+      height: 22px;
+      padding: 0 8px;
+      border-radius: 3px;
+      background: #fff7e6;
+      color: #fa8c16;
+      border: 1px solid #ffd591;
+      font-weight: 500;
+    }
+    .sub-title {
+      margin-top: 11px;
+    }
+    .floating-code {
+      position: absolute;
+      right: 0;
+      top: 500px;
+      width: 30px;
+      height: 162px;
+      border-radius: 5px 0 0 5px;
+      background: #0ac46c;
+      color: #fff;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      line-height: 23px;
+      writing-mode: vertical-rl;
+      letter-spacing: 1px;
+      z-index: 20;
+    }
+    .modal-mask {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, .48);
+      z-index: 40;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-mask.open {
+      display: flex;
+    }
+    .upload-modal {
+      position: relative;
+      width: 500px;
+      height: 352px;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 6px 18px rgba(31, 35, 41, .22);
+      overflow: hidden;
+    }
+    .modal-title {
+      position: absolute;
+      left: 20px;
+      top: 17px;
+      margin: 0;
+      font-size: 18px;
+      line-height: 24px;
+      font-weight: 700;
+      color: #1f2329;
+    }
+    .modal-icon {
+      position: absolute;
+      top: 18px;
+      width: 20px;
+      height: 20px;
+      border: 0;
+      background: transparent;
+      color: #8a8f99;
+      cursor: pointer;
+    }
+    .modal-icon.close {
+      right: 20px;
+    }
+    .modal-icon.close::before,
+    .modal-icon.close::after {
+      content: "";
+      position: absolute;
+      left: 9px;
+      top: 2px;
+      width: 1.5px;
+      height: 16px;
+      background: currentColor;
+      border-radius: 2px;
+    }
+    .modal-icon.close::before { transform: rotate(45deg); }
+    .modal-icon.close::after { transform: rotate(-45deg); }
+    .upload-form {
+      position: absolute;
+      left: 59px;
+      top: 75px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #3d4a5d;
+    }
+    .required {
+      color: #ff4d4f;
+      margin-right: 4px;
+    }
+    .upload-primary {
+      width: 82px;
+      height: 32px;
+      border: 0;
+      border-radius: 4px;
+      background: #1764ff;
+      color: #fff;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-weight: 600;
+      font-size: 14px;
+    }
+    .upload-symbol {
+      position: relative;
+      width: 15px;
+      height: 15px;
+    }
+    .upload-symbol::before {
+      content: "";
+      position: absolute;
+      left: 3px;
+      top: 6px;
+      width: 9px;
+      height: 6px;
+      border: 1.5px solid #fff;
+      border-top: none;
+      border-radius: 0 0 6px 6px;
+    }
+    .upload-symbol::after {
+      content: "";
+      position: absolute;
+      left: 6px;
+      top: 2px;
+      width: 5px;
+      height: 5px;
+      border-left: 1.5px solid #fff;
+      border-top: 1.5px solid #fff;
+      transform: rotate(45deg);
+      box-shadow: -2px 2px 0 -1px #fff;
+    }
+    .preview-button {
+      width: 48px;
+      height: 32px;
+      border: 1px solid #d9d9d9;
+      border-radius: 4px;
+      background: #fff;
+      display: grid;
+      place-items: center;
+    }
+    .eye {
+      position: relative;
+      width: 17px;
+      height: 11px;
+      border: 1.4px solid #1f2329;
+      border-radius: 50%;
+    }
+    .eye::after {
+      content: "";
+      position: absolute;
+      left: 5px;
+      top: 2px;
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: #1f2329;
+    }
+    .selected-file {
+      position: absolute;
+      left: 59px;
+      top: 118px;
+      max-width: 370px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      color: #3d4a5d;
+      font-size: 13px;
+    }
+    .upload-input {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      opacity: 0;
+      pointer-events: none;
+    }
+    .modal-footer {
+      position: absolute;
+      right: 16px;
+      bottom: 10px;
+      display: flex;
+      gap: 8px;
+    }
+    .modal-btn {
+      min-width: 64px;
+      height: 32px;
+      border-radius: 4px;
+      border: 0;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    .modal-btn.cancel {
+      background: #f5f7fa;
+      color: #1f2329;
+    }
+    .modal-btn.confirm {
+      background: #1764ff;
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-logo"></div>
+        <span>张伟的机构</span>
+        <div class="brand-divider"></div>
+        <div class="org">机构 <span class="caret"></span></div>
+      </div>
+      <nav class="top-tabs">
+        <div class="top-tab active">研学</div>
+        <div class="top-tab">课后服务</div>
+      </nav>
+      <div class="top-actions">
+        <div class="bell"></div>
+        <div class="fullscreen"></div>
+        <div class="avatar">张</div>
+      </div>
+      <div class="badge">1</div>
+    </header>
+
+    <aside class="sidebar">
+      <div class="menu-item"><span class="menu-icon home"></span><span>数据看板</span></div>
+      <div class="menu-item"><span class="menu-icon diamond"></span><span>研学课程</span></div>
+      <div class="menu-item"><span class="menu-icon box"></span><span>托管活动管理</span></div>
+      <div class="menu-item"><span class="menu-icon flag"></span><span>社会实践</span></div>
+      <div class="menu-item"><span class="menu-icon pin"></span><span>场地管理</span></div>
+      <div class="menu-item active"><span class="menu-icon flag"></span><span>集体研学活动</span></div>
+      <div class="menu-item"><span class="menu-icon box"></span><span>任务广场</span></div>
+      <div class="menu-item"><span class="menu-icon box"></span><span>比选中心</span></div>
+      <div class="menu-item"><span class="menu-icon box"></span><span>出行管理</span></div>
+      <div class="menu-item"><span class="menu-icon box"></span><span>报表管理(研学)</span><span class="menu-arrow">⌄</span></div>
+      <div class="menu-item"><span class="menu-icon circle"></span><span>订单管理（研学）</span><span class="menu-arrow">⌄</span></div>
+      <div class="menu-item"><span class="menu-icon circle">R</span><span>财务管理（研学）</span></div>
+      <div class="menu-item"><span class="menu-icon box"></span><span>托管活动结算</span></div>
+      <div class="menu-item"><span class="menu-icon circle">S</span><span>集体研学活动结算</span></div>
+      <div class="menu-item"><span class="menu-icon box"></span><span>系统设置</span><span class="menu-arrow">⌄</span></div>
+      <div class="menu-item"><span class="menu-icon box"></span><span>意见反馈</span></div>
+      <div class="collapse">≪</div>
+    </aside>
+
+    <main class="main">
+      <div class="breadcrumb"><span class="crumb-home"></span><span>/</span><span>集体研学活动</span><span>/</span><span>活动详情</span></div>
+
+      <section class="detail-card">
+        <div class="decor"></div>
+        <a class="back" href="./index.html">返 回</a>
+        <h1 id="activityTitle">城市安全教育研学</h1>
+        <div class="activity-main">
+          <div class="poster"></div>
+          <div class="facts">
+            <div class="fact"><span class="fact-icon doc"></span><span id="travelDateText">活动出行日期： 2026-08-30 至 2026-09-02</span></div>
+            <div class="fact"><span class="fact-icon doc"></span><span id="signupDateText">报名起止时间： 2026-08-26 09:47 至 2026-08-29 09:47</span></div>
+            <div class="fact"><span class="fact-icon grade"></span><span>适用年级： 一年级,二年级,三年级,五年级,四年级</span></div>
+            <div class="fact"><span class="fact-icon money">¥</span><span>活动价格： ￥0.01</span></div>
+            <div class="fact"><span class="fact-icon people"></span><span>报名人数： 0人</span></div>
+            <div class="fact"><span class="fact-icon area"></span><span>使用区域： 张伟的教育局</span></div>
+            <div class="fact"><span class="fact-icon area"></span><span>使用学校： 张伟的学校</span></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="status-card">申报审核状态： 已通过</section>
+
+      <section class="materials-card">
+        <nav class="tabs">
+          <div class="tab">活动详情</div>
+          <div class="tab">课程资源</div>
+          <div class="tab active">活动材料</div>
+          <div class="tab">学生名单</div>
+          <div class="tab">活动相册</div>
+        </nav>
+
+        <h2 class="section-title">学校备案材料信息</h2>
+        <table>
+          <colgroup><col class="material"><col class="file"><col class="action"></colgroup>
+          <thead>
+            <tr><th>材料名称</th><th>文件</th><th>操作</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>安全预案</td><td>矩形5178.png</td><td><span class="links"><span class="action-link">预览</span><span class="action-link">下载</span><span class="action-link" data-action="reupload" data-deadline="2026-08-29">重新上传</span></span></td></tr>
+            <tr><td>费用清单</td><td>矩形5178.png</td><td><span class="links"><span class="action-link">预览</span><span class="action-link">下载</span><span class="action-link" data-action="reupload" data-deadline="2026-08-29">重新上传</span></span></td></tr>
+            <tr><td>活动行程单</td><td><span class="upload-tag">未上传</span></td><td><span class="links"><span class="action-link" data-action="upload" data-deadline="2026-09-09">上传</span></span></td></tr>
+            <tr><td>家长告知书</td><td><span class="upload-tag">未上传</span></td><td><span class="links"><span class="action-link" data-action="upload" data-deadline="2026-09-09">上传</span></span></td></tr>
+          </tbody>
+        </table>
+
+        <h2 class="section-title sub-title">服务机构备案材料信息</h2>
+        <table>
+          <colgroup><col class="material"><col class="file"><col class="action"></colgroup>
+          <thead>
+            <tr><th>材料名称</th><th>文件</th><th>操作</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>安全预案</td><td>矩形5178.png</td><td><span class="links"><span class="action-link">预览</span><span class="action-link">下载</span><span class="action-link" data-action="reupload" data-deadline="2026-08-29">重新上传</span></span></td></tr>
+            <tr><td>营业执照</td><td>矩形5178.png</td><td><span class="links"><span class="action-link">预览</span><span class="action-link">下载</span><span class="action-link" data-action="reupload" data-deadline="2026-08-29">重新上传</span></span></td></tr>
+            <tr><td>应急保障方案</td><td><span class="upload-tag">未上传</span></td><td><span class="links"><span class="action-link" data-action="upload" data-deadline="2026-09-09">上传</span></span></td></tr>
+          </tbody>
+        </table>
+      </section>
+    </main>
+
+    <div class="floating-code">机构小程序码《</div>
+    <div class="modal-mask" id="uploadModal" aria-hidden="true">
+      <div class="upload-modal" role="dialog" aria-modal="true" aria-labelledby="uploadModalTitle">
+        <h3 class="modal-title" id="uploadModalTitle">材料上传</h3>
+        <button class="modal-icon close" type="button" aria-label="关闭" data-close-modal></button>
+        <div class="upload-form">
+          <span><span class="required">*</span>上传材料:</span>
+          <button class="upload-primary" type="button" id="uploadPick"><span class="upload-symbol"></span><span>上传</span></button>
+          <button class="preview-button" type="button" id="selectedFilePreview" aria-label="预览"><span class="eye"></span></button>
+          <input class="upload-input" type="file" id="materialFileInput" />
+        </div>
+        <div class="selected-file" id="selectedFileName"></div>
+        <div class="modal-footer">
+          <button class="modal-btn cancel" type="button" data-close-modal>取 消</button>
+          <button class="modal-btn confirm" type="button" id="uploadConfirm">确 认</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    (() => {
+      const setPageScale = () => {
+        const scale = Math.min(window.innerWidth / 1920, window.innerHeight / 1080, 1);
+        document.documentElement.style.setProperty("--page-scale", scale.toString());
+      };
+      setPageScale();
+      window.addEventListener("resize", setPageScale);
+
+      const modal = document.getElementById("uploadModal");
+      const fileInput = document.getElementById("materialFileInput");
+      const uploadPick = document.getElementById("uploadPick");
+      const selectedFileName = document.getElementById("selectedFileName");
+      const selectedFilePreview = document.getElementById("selectedFilePreview");
+      const rowFiles = new WeakMap();
+      let selectedFile = null;
+      let selectedFileUrl = "";
+      const defaultActivity = {
+        title: "城市安全教育研学",
+        travelStart: "2026-08-30",
+        travelEnd: "2026-09-02",
+        signupStart: "2026-08-26 09:47",
+        signupEnd: "2026-08-29 09:47"
+      };
+      let activity = defaultActivity;
+
+      try {
+        activity = { ...defaultActivity, ...JSON.parse(sessionStorage.getItem("selectedActivity") || "{}") };
+      } catch (error) {
+        activity = defaultActivity;
+      }
+
+      const addDays = (value, amount) => {
+        const date = new Date(`${value}T00:00:00`);
+        date.setDate(date.getDate() + amount);
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, "0");
+        const day = String(date.getDate()).padStart(2, "0");
+        return `${year}-${month}-${day}`;
+      };
+
+      document.getElementById("activityTitle").textContent = activity.title;
+      document.getElementById("travelDateText").textContent = `活动出行日期： ${activity.travelStart} 至 ${activity.travelEnd}`;
+      document.getElementById("signupDateText").textContent = `报名起止时间： ${activity.signupStart} 至 ${activity.signupEnd}`;
+
+      const reuploadDeadline = addDays(activity.travelStart, -1);
+      const uploadDeadline = addDays(activity.travelEnd, 7);
+      document.querySelectorAll('[data-action="reupload"]').forEach((node) => {
+        node.dataset.deadline = reuploadDeadline;
+      });
+      document.querySelectorAll('[data-action="upload"]').forEach((node) => {
+        node.dataset.deadline = uploadDeadline;
+      });
+
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      const applyDeadlineState = (node) => {
+        node.classList.remove("disabled");
+        node.removeAttribute("title");
+        const deadline = new Date(`${node.dataset.deadline}T00:00:00`);
+        const expired = today > deadline;
+        if (!expired) return node;
+
+        node.classList.add("disabled");
+        if (node.dataset.action === "reupload") {
+          node.title = "出行活动时间前1天后不可重新上传，重新上传会覆盖历史文件";
+        } else {
+          node.title = "活动结束日期后一周后不可补充上传";
+        }
+        return node;
+      };
+
+      document.querySelectorAll("[data-deadline]").forEach(applyDeadlineState);
+
+      let activeMaterialRow = null;
+      const resetSelectedFile = () => {
+        selectedFile = null;
+        if (selectedFileUrl) URL.revokeObjectURL(selectedFileUrl);
+        selectedFileUrl = "";
+        fileInput.value = "";
+        selectedFileName.textContent = "";
+      };
+      const openModal = (row) => {
+        activeMaterialRow = row;
+        resetSelectedFile();
+        modal.classList.add("open");
+        modal.setAttribute("aria-hidden", "false");
+      };
+      const closeModal = () => {
+        modal.classList.remove("open");
+        modal.setAttribute("aria-hidden", "true");
+      };
+
+      document.querySelector(".materials-card").addEventListener("click", (event) => {
+        const action = event.target.closest('[data-action="upload"], [data-action="reupload"]');
+        const preview = event.target.closest('[data-action="preview"]');
+        const download = event.target.closest('[data-action="download"]');
+        if (preview || download) {
+          const fileData = rowFiles.get((preview || download).closest("tr"));
+          if (!fileData) return;
+          if (preview) {
+            window.open(fileData.url, "_blank");
+          } else {
+            const anchor = document.createElement("a");
+            anchor.href = fileData.url;
+            anchor.download = fileData.name;
+            anchor.click();
+          }
+          return;
+        }
+        if (!action || action.classList.contains("disabled")) return;
+        openModal(action.closest("tr"));
+      });
+
+      uploadPick.addEventListener("click", () => {
+        fileInput.click();
+      });
+
+      fileInput.addEventListener("change", () => {
+        const file = fileInput.files && fileInput.files[0];
+        if (!file) return;
+        selectedFile = file;
+        if (selectedFileUrl) URL.revokeObjectURL(selectedFileUrl);
+        selectedFileUrl = URL.createObjectURL(file);
+        selectedFileName.textContent = file.name;
+      });
+
+      selectedFilePreview.addEventListener("click", () => {
+        if (!selectedFileUrl) {
+          selectedFileName.textContent = "请先选择文件";
+          return;
+        }
+        window.open(selectedFileUrl, "_blank");
+      });
+
+      document.querySelectorAll("[data-close-modal]").forEach((node) => {
+        node.addEventListener("click", closeModal);
+      });
+
+      document.getElementById("uploadConfirm").addEventListener("click", () => {
+        if (!selectedFile || !selectedFileUrl) {
+          selectedFileName.textContent = "请先选择文件";
+          return;
+        }
+        if (activeMaterialRow) {
+          const fileCell = activeMaterialRow.children[1];
+          const actionCell = activeMaterialRow.children[2];
+          const committedUrl = selectedFileUrl;
+          rowFiles.set(activeMaterialRow, { name: selectedFile.name, url: committedUrl });
+          fileCell.textContent = selectedFile.name;
+          actionCell.innerHTML = `<span class="links"><span class="action-link" data-action="preview">预览</span><span class="action-link" data-action="download">下载</span><span class="action-link" data-action="reupload" data-deadline="${reuploadDeadline}">重新上传</span></span>`;
+          applyDeadlineState(actionCell.querySelector('[data-action="reupload"]'));
+          selectedFileUrl = "";
+        }
+        closeModal();
+      });
+
+      modal.addEventListener("click", (event) => {
+        if (event.target !== modal) return;
+        closeModal();
+      });
+    })();
+  </script>
+</body>
+</html>
