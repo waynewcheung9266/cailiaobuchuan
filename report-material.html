@@ -566,6 +566,27 @@
       line-height: 24px;
       font-weight: 700;
     }
+    .section-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 16px 0 13px;
+      padding-right: 14px;
+    }
+    .section-heading .section-title {
+      margin: 0;
+    }
+    .section-upload {
+      width: 64px;
+      height: 32px;
+      border: 0;
+      border-radius: 4px;
+      background: #1764ff;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+    }
     table {
       width: 100%;
       border-collapse: collapse;
@@ -617,6 +638,64 @@
     }
     .sub-title {
       margin-top: 11px;
+    }
+    .supplement-table thead th:first-child {
+      padding-left: 13px;
+    }
+    .supplement-table tbody td {
+      height: 52px;
+    }
+    col.supplement-file { width: 86%; }
+    col.supplement-action { width: 14%; }
+    .empty-row td {
+      height: 115px;
+      border-bottom: 0;
+    }
+    .empty-state {
+      height: 115px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .supplement-heading-action {
+      width: 14%;
+      display: flex;
+      justify-content: flex-start;
+      transform: translateX(120px);
+    }
+    .empty-illustration {
+      position: relative;
+      width: 76px;
+      height: 58px;
+      opacity: .58;
+    }
+    .empty-illustration::before {
+      content: "";
+      position: absolute;
+      left: 22px;
+      bottom: 0;
+      width: 39px;
+      height: 33px;
+      border-radius: 3px;
+      background: #eef1f6;
+      box-shadow: inset 8px 8px 0 #dfe4ec;
+    }
+    .empty-illustration::after {
+      content: "...";
+      position: absolute;
+      right: 2px;
+      top: 0;
+      width: 38px;
+      height: 27px;
+      border-radius: 50%;
+      background: #d9dee7;
+      color: #fff;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      font-size: 21px;
+      line-height: 19px;
+      letter-spacing: 1px;
     }
     .floating-code {
       position: absolute;
@@ -917,6 +996,20 @@
             <tr><td>应急保障方案</td><td><span class="upload-tag">未上传</span></td><td><span class="links"><span class="action-link" data-action="upload" data-deadline="2026-09-09">上传</span></span></td></tr>
           </tbody>
         </table>
+
+        <div class="section-heading">
+          <h2 class="section-title">补充材料信息</h2>
+          <div class="supplement-heading-action"><button class="section-upload" type="button" data-action="supplement-upload">上传</button></div>
+        </div>
+        <table class="supplement-table">
+          <colgroup><col class="supplement-file"><col class="supplement-action"></colgroup>
+          <thead>
+            <tr><th>补充材料文件</th><th>操作</th></tr>
+          </thead>
+          <tbody id="supplementBody">
+            <tr class="empty-row"><td><div class="empty-state"><span class="empty-illustration"></span></div></td><td></td></tr>
+          </tbody>
+        </table>
       </section>
     </main>
 
@@ -1015,6 +1108,7 @@
       document.querySelectorAll("[data-deadline]").forEach(applyDeadlineState);
 
       let activeMaterialRow = null;
+      let uploadTarget = "material";
       const resetSelectedFile = () => {
         selectedFile = null;
         if (selectedFileUrl) URL.revokeObjectURL(selectedFileUrl);
@@ -1022,8 +1116,9 @@
         fileInput.value = "";
         selectedFileName.textContent = "";
       };
-      const openModal = (row) => {
+      const openModal = (row, target = "material") => {
         activeMaterialRow = row;
+        uploadTarget = target;
         resetSelectedFile();
         modal.classList.add("open");
         modal.setAttribute("aria-hidden", "false");
@@ -1034,9 +1129,19 @@
       };
 
       document.querySelector(".materials-card").addEventListener("click", (event) => {
-        const action = event.target.closest('[data-action="upload"], [data-action="reupload"]');
+        const action = event.target.closest('[data-action="upload"], [data-action="reupload"], [data-action="supplement-upload"]');
         const preview = event.target.closest('[data-action="preview"]');
         const download = event.target.closest('[data-action="download"]');
+        const remove = event.target.closest('[data-action="delete"]');
+        if (remove) {
+          const row = remove.closest("tr");
+          const supplementBody = document.getElementById("supplementBody");
+          row.remove();
+          if (!supplementBody.querySelector("tr")) {
+            supplementBody.innerHTML = `<tr class="empty-row"><td><div class="empty-state"><span class="empty-illustration"></span></div></td><td></td></tr>`;
+          }
+          return;
+        }
         if (preview || download) {
           const fileData = rowFiles.get((preview || download).closest("tr"));
           if (!fileData) return;
@@ -1051,7 +1156,9 @@
           return;
         }
         if (!action || action.classList.contains("disabled")) return;
-        openModal(action.closest("tr"));
+        const row = action.closest("tr");
+        const isSupplement = action.dataset.action === "supplement-upload" || action.closest(".supplement-table");
+        openModal(row, isSupplement ? "supplement" : "material");
       });
 
       uploadPick.addEventListener("click", () => {
@@ -1084,7 +1191,20 @@
           selectedFileName.textContent = "请先选择文件";
           return;
         }
-        if (activeMaterialRow) {
+        if (uploadTarget === "supplement") {
+          const supplementBody = document.getElementById("supplementBody");
+          let row = activeMaterialRow;
+          if (!row || row.classList.contains("empty-row")) {
+            supplementBody.querySelector(".empty-row")?.remove();
+            row = document.createElement("tr");
+            supplementBody.appendChild(row);
+          }
+          const committedUrl = selectedFileUrl;
+          row.classList.remove("empty-row");
+          row.innerHTML = `<td>${selectedFile.name}</td><td><span class="links"><span class="action-link" data-action="preview">预览</span><span class="action-link" data-action="download">下载</span><span class="action-link" data-action="delete">删除</span><span class="action-link" data-action="reupload">重新上传</span></span></td>`;
+          rowFiles.set(row, { name: selectedFile.name, url: committedUrl });
+          selectedFileUrl = "";
+        } else if (activeMaterialRow) {
           const fileCell = activeMaterialRow.children[1];
           const actionCell = activeMaterialRow.children[2];
           const committedUrl = selectedFileUrl;
